@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 
 from keras.callbacks import ModelCheckpoint
@@ -31,3 +32,7 @@ if __name__ == '__main__':
     if not os.path.exists(test_result_folder):
         os.makedirs(test_result_folder)
     saveResult(test_result_folder, results)
+
+    files = os.listdir("data/" + data_set_name + "/test")
+    for file in files:
+        shutil.copy("data/" + data_set_name + "/test/" + file, test_result_folder)
