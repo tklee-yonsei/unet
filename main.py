@@ -1,7 +1,10 @@
+import os
 import sys
 
-from data import *
-from model import *
+from keras.callbacks import ModelCheckpoint
+
+from data import trainGenerator, testGenerator, saveResult
+from model import unet
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
