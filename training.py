@@ -20,11 +20,12 @@ if __name__ == '__main__':
                          zoom_range=0.05,
                          horizontal_flip=True,
                          fill_mode='nearest')
-    myGene = train_generator(2, "data/" + data_set_name + "/train", 'image', 'label', data_gen_args, save_to_dir=None)
+    my_generator = train_generator(2, "data/" + data_set_name + "/train", 'image', 'label', data_gen_args,
+                                   save_to_dir=None)
 
     model = unet()
     model_checkpoint = ModelCheckpoint(data_set_name + ".hdf5", monitor='loss', verbose=1, save_best_only=True)
-    model.fit_generator(myGene, steps_per_epoch=300, epochs=1, callbacks=[model_checkpoint])
+    model.fit_generator(my_generator, steps_per_epoch=300, epochs=1, callbacks=[model_checkpoint])
 
     testGene = test_generator("data/" + data_set_name + "/test")
     results = model.predict_generator(testGene, 30, verbose=1)

@@ -95,6 +95,18 @@ def test_generator(test_path, num_image=30, target_size=(256, 256), flag_multi_c
         yield img
 
 
+def test_via_path_generator(test_path, target_size=(256, 256), flag_multi_class=False, as_gray=True):
+    filenames = os.listdir(test_path)
+    filtered_only_png = list(filter(lambda f: f.endswith('.png'), filenames))
+    for file in filtered_only_png:
+        img = io.imread(os.path.join(test_path, file), as_gray=as_gray)
+        img = img / 255
+        img = trans.resize(img, target_size)
+        img = np.reshape(img, img.shape + (1,)) if (not flag_multi_class) else img
+        img = np.reshape(img, (1,) + img.shape)
+        yield img
+
+
 def generate_train_numpy(image_path, mask_path, flag_multi_class=False, num_class=2, image_prefix="image",
                          mask_prefix="mask", image_as_gray=True, mask_as_gray=True):
     image_name_arr = glob.glob(os.path.join(image_path, "%s*.png" % image_prefix))
@@ -125,3 +137,9 @@ def save_result(save_path, numpy_file, flag_multi_class=False, num_class=2):
     for i, item in enumerate(numpy_file):
         img = label_visualize(num_class, COLOR_DICT, item) if flag_multi_class else item[:, :, 0]
         io.imsave(os.path.join(save_path, "%d_predict.png" % i), img)
+
+
+def save_result_with_name(save_path, numpy_file, name_list, flag_multi_class=False, num_class=2):
+    for i, item in enumerate(numpy_file):
+        img = label_visualize(num_class, COLOR_DICT, item) if flag_multi_class else item[:, :, 0]
+        io.imsave(os.path.join(save_path, name_list[i]), img)
