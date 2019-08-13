@@ -10,7 +10,6 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 if __name__ == '__main__':
     data_set_name = sys.argv[1]
-    test_result_folder = sys.argv[2]
 
     data_gen_args = dict(rotation_range=0.2,
                          width_shift_range=0.05,
@@ -30,10 +29,11 @@ if __name__ == '__main__':
     # print("--- Validation ---")
 
     print("--- Test ---")
-    files = os.listdir("data/" + data_set_name + "/test")
-    filtered_only_png = list(filter(lambda f: f.endswith('.png'), files))
-    test_generator = train_generator(2, "data/" + data_set_name + "/test", 'image', 'label', data_gen_args,
-                                     save_to_dir=None)
-    scores = model.evaluate_generator(test_generator, len(filtered_only_png))
+    test_label_data_folder = os.path.join("data", data_set_name, "test", "label")
+    test_label_folder_files = os.listdir(test_label_data_folder)
+    only_png_files_in_test_label_folder = list(filter(lambda f: f.endswith('.png'), test_label_folder_files))
+    test_generator = image_label_set_generator(2, "data/" + data_set_name + "/test", 'image', 'label', data_gen_args,
+                                               save_to_dir=None)
+    scores = model.evaluate_generator(test_generator, len(only_png_files_in_test_label_folder))
     for index, metrics_name in enumerate(model.metrics_names):
-        print("%s: %.2f%%" % (model.metrics_names[index], scores[index] * 100))
+        print("%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
